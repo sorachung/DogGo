@@ -35,7 +35,8 @@ namespace DogGo.Repositories
                                                Address,
                                                NeighborhoodId,
                                                Phone
-                                          FROM Owner";
+                                          FROM Owner"
+;
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
                         List<Owner> owners = new List<Owner>();

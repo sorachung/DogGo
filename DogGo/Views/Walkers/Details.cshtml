@@ -23,16 +23,16 @@
             @Html.DisplayFor(model => model.Name)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NeighborhoodId)
+            @Html.DisplayNameFor(model => model.Neighborhood)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NeighborhoodId)
+            @Html.DisplayFor(model => model.Neighborhood.Name)
         </dd>
         <dt class = "col-sm-2">
-            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" />
+            @Html.DisplayNameFor(model => model.ImageUrl)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ImageUrl)
+            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" />
         </dd>
     </dl>
 </div>
