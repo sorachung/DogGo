@@ -26,6 +26,7 @@ namespace DogGo
         {
             services.AddTransient<IWalkerRepository, WalkerRepository>();
             services.AddTransient<IOwnerRepository, OwnerRepository>();
+            services.AddTransient<IDogRepository, DogRepository>();
             services.AddControllersWithViews();
         }
 

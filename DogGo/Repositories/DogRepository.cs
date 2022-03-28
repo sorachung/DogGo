@@ -2,6 +2,7 @@
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
 using System.Collections.Generic;
+using System;
 
 namespace DogGo.Repositories
 {
@@ -113,7 +114,7 @@ namespace DogGo.Repositories
                                                Breed,
                                                Notes,
                                                ImageUrl,
-                                               OwnerId,
+                                               OwnerId
                                           FROM Dog
                                          WHERE OwnerId = @ownerId";
                     cmd.Parameters.AddWithValue("@ownerId", ownerId);
@@ -128,11 +129,25 @@ namespace DogGo.Repositories
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Notes = reader.GetString(reader.GetOrdinal("Notes")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
                             };
 
+                            if (reader.IsDBNull(reader.GetOrdinal("Notes")))
+                            {
+                                dog.Notes = null;
+                            }
+                            else
+                            {
+                                dog.Notes = reader.GetString(reader.GetOrdinal("Notes"));
+                            }
+                            if (reader.IsDBNull(reader.GetOrdinal("ImageUrl")))
+                            {
+                                dog.ImageUrl = null;
+                            }
+                            else
+                            {
+                                dog.ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"));
+                            }
                             dogs.Add(dog);
                         }
                         return dogs;

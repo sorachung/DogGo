@@ -8,11 +8,13 @@ namespace DogGo.Repositories
     public class OwnerRepository : IOwnerRepository
     {
         private readonly IConfiguration _config;
+        private IDogRepository _dogRepo;
 
         // The constructor accepts an IConfiguration object as a parameter. This class comes from the ASP.NET framework and is useful for retrieving things out of the appsettings.json file like connection strings.
         public OwnerRepository(IConfiguration config)
         {
             _config = config;
+            _dogRepo = new DogRepository(config);
         }
         public SqlConnection Connection
         {
@@ -66,6 +68,7 @@ namespace DogGo.Repositories
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
+                    var dogs = _dogRepo.GetDogsByOwner(id);
                     cmd.CommandText = @"SELECT Id, 
                                                Email, 
                                                [Name],
@@ -73,7 +76,7 @@ namespace DogGo.Repositories
                                                NeighborhoodId,
                                                Phone
                                           FROM Owner
-                                         WHERE Id = @id";
+                                         WHERE Id = @id;";
                     cmd.Parameters.AddWithValue("@id", id);
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -87,7 +90,8 @@ namespace DogGo.Repositories
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 Address = reader.GetString(reader.GetOrdinal("Address")),
                                 NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
-                                Phone = reader.GetString(reader.GetOrdinal("Phone"))
+                                Phone = reader.GetString(reader.GetOrdinal("Phone")),
+                                Dogs = dogs
                             };
 
                             return owner;
