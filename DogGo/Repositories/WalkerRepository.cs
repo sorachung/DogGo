@@ -89,7 +89,7 @@ namespace DogGo.Repositories
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("wId")),
                                 Name = reader.GetString(reader.GetOrdinal("wName")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
+                                ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
                                 Neighborhood = new Neighborhood()
                                 {
@@ -109,6 +109,7 @@ namespace DogGo.Repositories
                 }
             }
         }
+
         public void AddWalker(Walker walker)
         {
             using (SqlConnection conn = Connection)
@@ -129,6 +130,29 @@ namespace DogGo.Repositories
                     int id = (int)cmd.ExecuteScalar();
 
                     walker.Id = id;
+                }
+            }
+        }
+
+        public void UpdateWalker(Walker walker)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"UPDATE Walker
+                                           SET [Name] = @name,
+                                               ImageUrl = @imageUrl,
+                                               NeighborhoodId = @neighborhoodId
+                                         WHERE Id = @id";
+
+                    cmd.Parameters.AddWithValue("@id", walker.Id);
+                    cmd.Parameters.AddWithValue("@name", walker.Name);
+                    cmd.Parameters.AddWithValue("@imageUrl", walker.ImageUrl == null ? DBNull.Value : walker.ImageUrl);
+                    cmd.Parameters.AddWithValue("@neighborhoodId", walker.NeighborhoodId == 0 ? DBNull.Value : walker.NeighborhoodId);
+
+                    cmd.ExecuteNonQuery();
                 }
             }
         }
