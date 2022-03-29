@@ -92,21 +92,27 @@ namespace DogGo.Controllers
         // GET: WalkersController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Walker walker = _walkerRepo.GetWalkerById(id);
+            if (walker == null)
+            {
+                return NotFound();
+            }
+            return View(walker);
         }
 
         // POST: WalkersController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Walker walker)
         {
             try
             {
+                _walkerRepo.DeleteWalker(id);
                 return RedirectToAction(nameof(Index));
             }
-            catch
+            catch (Exception ex)
             {
-                return View();
+                return View(walker);
             }
         }
     }
