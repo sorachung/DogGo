@@ -1,6 +1,7 @@
 ﻿using DogGo.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 
 namespace DogGo.Repositories
@@ -35,6 +36,7 @@ namespace DogGo.Repositories
                                                Email,
                                                o.[Name],
                                                Address,
+                                               NeighborhoodId,
                                                n.Id as nId,
                                                n.[Name] as NeighborhoodName,
                                                Phone
@@ -52,11 +54,11 @@ namespace DogGo.Repositories
                                 Email = reader.GetString(reader.GetOrdinal("Email")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 Address = reader.GetString(reader.GetOrdinal("Address")),
-                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("nId")),
+                                NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
                                 Neighborhood = new Neighborhood()
                                 {
-                                    Id = reader.GetInt32(reader.GetOrdinal("nId")),
-                                    Name = reader.GetString(reader.GetOrdinal("NeighborhoodName"))
+                                    Id = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
+                                    Name = reader.IsDBNull(reader.GetOrdinal("NeighborhoodName")) ? null : reader.GetString(reader.GetOrdinal("NeighborhoodName"))
                                 },
                                 Phone = reader.GetString(reader.GetOrdinal("Phone"))
                             };
@@ -110,11 +112,11 @@ namespace DogGo.Repositories
                                     Email = reader.GetString(reader.GetOrdinal("Email")),
                                     Name = reader.GetString(reader.GetOrdinal("oName")),
                                     Address = reader.GetString(reader.GetOrdinal("Address")),
-                                    NeighborhoodId = reader.GetInt32(reader.GetOrdinal("nId")),
+                                    NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
                                     Neighborhood = new Neighborhood()
                                     {
-                                        Id = reader.GetInt32(reader.GetOrdinal("nId")),
-                                        Name = reader.GetString(reader.GetOrdinal("NeighborhoodName"))
+                                        Id = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
+                                        Name = reader.IsDBNull(reader.GetOrdinal("NeighborhoodName")) ? null : reader.GetString(reader.GetOrdinal("NeighborhoodName"))
                                     },
                                     Phone = reader.GetString(reader.GetOrdinal("Phone")),
                                     Dogs = new List<Dog>()
@@ -170,7 +172,7 @@ namespace DogGo.Repositories
                                 Email = reader.GetString(reader.GetOrdinal("Email")),
                                 Address = reader.GetString(reader.GetOrdinal("Address")),
                                 Phone = reader.GetString(reader.GetOrdinal("Phone")),
-                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
+                                NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
                             };
 
                             return owner;
@@ -199,7 +201,7 @@ namespace DogGo.Repositories
                     cmd.Parameters.AddWithValue("@email", owner.Email);
                     cmd.Parameters.AddWithValue("@phoneNumber", owner.Phone);
                     cmd.Parameters.AddWithValue("@address", owner.Address);
-                    cmd.Parameters.AddWithValue("@neighborhoodId", owner.NeighborhoodId);
+                    cmd.Parameters.AddWithValue("@neighborhoodId", owner.NeighborhoodId == 0 ? DBNull.Value : owner.NeighborhoodId);
 
                     int id = (int)cmd.ExecuteScalar();
 
@@ -230,7 +232,7 @@ namespace DogGo.Repositories
                     cmd.Parameters.AddWithValue("@email", owner.Email);
                     cmd.Parameters.AddWithValue("@address", owner.Address);
                     cmd.Parameters.AddWithValue("@phone", owner.Phone);
-                    cmd.Parameters.AddWithValue("@neighborhoodId", owner.NeighborhoodId);
+                    cmd.Parameters.AddWithValue("@neighborhoodId", owner.NeighborhoodId == 0 ? DBNull.Value : owner.NeighborhoodId);
                     cmd.Parameters.AddWithValue("@id", owner.Id);
 
                     cmd.ExecuteNonQuery();
