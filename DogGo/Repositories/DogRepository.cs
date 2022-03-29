@@ -209,6 +209,7 @@ namespace DogGo.Repositories
                 }
             }
         }
+        
         public void UpdateDog(Dog dog)
         {
             using (SqlConnection conn = Connection)
@@ -234,6 +235,21 @@ namespace DogGo.Repositories
                     cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
                     cmd.Parameters.AddWithValue("@id", dog.Id);
 
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteDog(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Dog
+                                      WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
                     cmd.ExecuteNonQuery();
                 }
             }
