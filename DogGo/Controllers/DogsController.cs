@@ -1,20 +1,33 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using DogGo.Repositories;
+using DogGo.Models;
+using System.Collections.Generic;
+using System;
 
 namespace DogGo.Controllers
 {
     public class DogsController : Controller
     {
+        private readonly IDogRepository _dogRepo;
+
+        public DogsController(IDogRepository dogRepository)
+        {
+            _dogRepo = dogRepository;
+        }
+
         // GET: DogsController
         public ActionResult Index()
         {
-            return View();
+            List<Dog> dogs = _dogRepo.GetAllDogs();
+            return View(dogs);
         }
 
         // GET: DogsController/Details/5
         public ActionResult Details(int id)
         {
-            return View();
+            Dog dog = _dogRepo.GetDogById(id);
+            return View(dog);
         }
 
         // GET: DogsController/Create

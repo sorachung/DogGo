@@ -35,7 +35,7 @@ namespace DogGo.Repositories
                                                Breed,
                                                Notes,
                                                ImageUrl,
-                                               ownerId,
+                                               ownerId
                                           FROM Dog"
 ;
                     using (SqlDataReader reader = cmd.ExecuteReader())
@@ -48,10 +48,25 @@ namespace DogGo.Repositories
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Notes = reader.GetString(reader.GetOrdinal("Notes")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
                             };
+
+                            if (reader.IsDBNull(reader.GetOrdinal("Notes")))
+                            {
+                                dog.Notes = null;
+                            }
+                            else
+                            {
+                                dog.Notes = reader.GetString(reader.GetOrdinal("Notes"));
+                            }
+                            if (reader.IsDBNull(reader.GetOrdinal("ImageUrl")))
+                            {
+                                dog.ImageUrl = null;
+                            }
+                            else
+                            {
+                                dog.ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"));
+                            }
 
                             dogs.Add(dog);
                         }
@@ -72,7 +87,7 @@ namespace DogGo.Repositories
                                                Breed,
                                                Notes,
                                                ImageUrl,
-                                               ownerId,
+                                               ownerId
                                           FROM Dog
                                          WHERE Id = @id";
                     cmd.Parameters.AddWithValue("@id", id);
@@ -86,10 +101,25 @@ namespace DogGo.Repositories
                                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                                 Name = reader.GetString(reader.GetOrdinal("Name")),
                                 Breed = reader.GetString(reader.GetOrdinal("Breed")),
-                                Notes = reader.GetString(reader.GetOrdinal("Notes")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
                             };
+
+                            if (reader.IsDBNull(reader.GetOrdinal("Notes")))
+                            {
+                                dog.Notes = null;
+                            }
+                            else
+                            {
+                                dog.Notes = reader.GetString(reader.GetOrdinal("Notes"));
+                            }
+                            if (reader.IsDBNull(reader.GetOrdinal("ImageUrl")))
+                            {
+                                dog.ImageUrl = null;
+                            }
+                            else
+                            {
+                                dog.ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl"));
+                            }
 
                             return dog;
                         }
