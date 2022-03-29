@@ -1,6 +1,7 @@
 ﻿using DogGo.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
+using System;
 using System.Collections.Generic;
 
 namespace DogGo.Repositories
@@ -45,12 +46,12 @@ namespace DogGo.Repositories
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("wId")),
                                 Name = reader.GetString(reader.GetOrdinal("wName")),
-                                ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
-                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                                ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
+                                NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
                                 Neighborhood = new Neighborhood()
                                 {
-                                    Id = reader.GetInt32(reader.GetOrdinal("nId")),
-                                    Name = reader.GetString(reader.GetOrdinal("nName"))
+                                    Id = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
+                                    Name = reader.IsDBNull(reader.GetOrdinal("nName")) ? null : reader.GetString(reader.GetOrdinal("nName"))
                                 }
 
                             };
@@ -89,11 +90,11 @@ namespace DogGo.Repositories
                                 Id = reader.GetInt32(reader.GetOrdinal("wId")),
                                 Name = reader.GetString(reader.GetOrdinal("wName")),
                                 ImageUrl = reader.GetString(reader.GetOrdinal("ImageUrl")),
-                                NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
+                                NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
                                 Neighborhood = new Neighborhood()
                                 {
-                                    Id = reader.GetInt32(reader.GetOrdinal("nId")),
-                                    Name = reader.GetString(reader.GetOrdinal("nName"))
+                                    Id = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
+                                    Name = reader.IsDBNull(reader.GetOrdinal("nName")) ? null : reader.GetString(reader.GetOrdinal("nName"))
                                 }
 
                             };
@@ -105,6 +106,29 @@ namespace DogGo.Repositories
                             return null;
                         }
                     }
+                }
+            }
+        }
+        public void AddWalker(Walker walker)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"
+                    INSERT INTO Walker ([Name], ImageUrl, NeighborhoodId)
+                    OUTPUT INSERTED.ID
+                    VALUES (@name, @imageUrl, @neighborhoodId);
+                ";
+
+                    cmd.Parameters.AddWithValue("@name", walker.Name);
+                    cmd.Parameters.AddWithValue("@imageUrl", walker.ImageUrl == null ? DBNull.Value : walker.ImageUrl);
+                    cmd.Parameters.AddWithValue("@neighborhoodId", walker.NeighborhoodId == 0 ? DBNull.Value : walker.NeighborhoodId);
+
+                    int id = (int)cmd.ExecuteScalar();
+
+                    walker.Id = id;
                 }
             }
         }
