@@ -185,5 +185,29 @@ namespace DogGo.Repositories
                 }
             }
         }
+
+        public void AddDog(Dog dog)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Dog ([Name], Breed, Notes, ImageUrl, OwnerId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@name, @breed, @notes, @imageurl, @ownerId)";
+
+                    cmd.Parameters.AddWithValue("@name", dog.Name);
+                    cmd.Parameters.AddWithValue("@breed", dog.Breed);
+                    cmd.Parameters.AddWithValue("@notes", dog.Notes == null ? DBNull.Value : dog.Notes);
+                    cmd.Parameters.AddWithValue("@imageurl", dog.ImageUrl == null ? DBNull.Value : dog.ImageUrl);
+                    cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+
+                    int id = (int)cmd.ExecuteScalar();
+                    dog.Id = id;
+
+                }
+            }
+        }
     }
 }
