@@ -1,4 +1,4 @@
-﻿@model DogGo.Models.Owner
+﻿@model DogGo.Models.ViewModels.OwnerFormViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,29 +13,35 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="Owner.Email" class="control-label"></label>
+                <input asp-for="Owner.Email" class="form-control" />
+                <span asp-validation-for="Owner.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Owner.Name" class="control-label"></label>
+                <input asp-for="Owner.Name" class="form-control" />
+                <span asp-validation-for="Owner.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Address" class="control-label"></label>
-                <input asp-for="Address" class="form-control" />
-                <span asp-validation-for="Address" class="text-danger"></span>
+                <label asp-for="Owner.Phone" class="control-label"></label>
+                <input asp-for="Owner.Phone" class="form-control" />
+                <span asp-validation-for="Owner.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="Owner.Address" class="control-label"></label>
+                <input asp-for="Owner.Address" class="form-control" />
+                <span asp-validation-for="Owner.Address" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NeighborhoodId" class="control-label"></label>
-                <input asp-for="NeighborhoodId" class="form-control" />
-                <span asp-validation-for="NeighborhoodId" class="text-danger"></span>
+                <label asp-for="Owner.NeighborhoodId" class="control-label"></label>
+                <select asp-for="Owner.NeighborhoodId" class="form-control">
+                    <option value="">Select Neighborhood</option>
+                    @foreach (Neighborhood neighborhood in Model.Neighborhoods)
+                    {
+                        <option value="@neighborhood.Id">@neighborhood.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="Owner.NeighborhoodId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />
@@ -47,7 +53,3 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}

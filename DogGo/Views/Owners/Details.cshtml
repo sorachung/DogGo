@@ -1,61 +1,77 @@
-﻿@model DogGo.Models.Owner
+﻿@model DogGo.Models.ViewModels.ProfileViewModel 
 
-@{
-    ViewData["Title"] = "Details";
-}
-
-<h1>Details</h1>
-
+@{ ViewData["Title"] ="Profile"; }
 <div>
-    <h4>Owner</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Address)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Address)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Neighborhood)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Neighborhood.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Dogs)
-        </dt>
-        <dd class="col-sm-10">
-            @{var dogString = String.Join(", ", Model.Dogs.ConvertAll<string>(dog => dog.Name));}
-            @Html.DisplayFor(Model => dogString)
-        </dd>
-    </dl>
-</div>
-<div>
-    @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
-    <a asp-action="Index">Back to List</a>
+  <h1 class="mb-4">@Model.Owner.Name</h1>
+
+  <section class="container">
+    <img
+      style="width:100px;float:left;margin-right:20px"
+      src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Font_Awesome_5_regular_user-circle.svg"
+    />
+    <div>
+      <label class="font-weight-bold">Address:</label>
+      <span>@Model.Owner.Address</span>
+    </div>
+    <div>
+      <label class="font-weight-bold">Phone:</label>
+      <span>@Model.Owner.Phone</span>
+    </div>
+    <div>
+      <label class="font-weight-bold">Email:</label>
+      <span>@Model.Owner.Email</span>
+    </div>
+  </section>
+
+  <hr class="mt-5" />
+  <div class="clearfix"></div>
+
+  <div class="row">
+    <section class="col-8 container mt-5">
+      <h1 class="text-left">Dogs</h1>
+
+      <div class="row">
+        @foreach (Dog dog in Model.Dogs) {
+        <div class="card m-4" style="width: 18rem;">
+          @if (String.IsNullOrEmpty(dog.ImageUrl)) {
+          <img
+            src="https://cdn.pixabay.com/photo/2018/08/15/13/12/dog-3608037_960_720.jpg"
+            class="card-img-top"
+            alt="Doggo"
+          />
+          } else {
+          <img src="@dog.ImageUrl" class="card-img-top" alt="Doggo" />
+          }
+          <div class="card-body">
+            <div>
+              <label class="font-weight-bold">Name:</label>
+              <span>@dog.Name</span>
+            </div>
+            <div>
+              <label class="font-weight-bold">Breed:</label>
+              <span>@dog.Breed</span>
+            </div>
+            <div>
+              <label class="font-weight-bold">Notes:</label>
+              <p>@dog.Notes</p>
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+    </section>
+
+    <section class="col-lg-4 col-md-8 container mt-5">
+      <h1>Walkers Near Me</h1>
+
+      <ul class="list-group mt-4">
+        @foreach (Walker walker in Model.Walkers) {
+        <li class="list-group-item disabled" aria-disabled="true">
+          <img src="@walker.ImageUrl" style="width:50px" />
+          <span class="font-weight-bold ml-4">@walker.Name</span>
+        </li>
+        }
+      </ul>
+    </section>
+  </div>
 </div>
