@@ -111,9 +111,12 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT w.Id as wId, w.[Name] as wName, ImageUrl, NeighborhoodId, n.Id as nId, n.[Name] as nName
+                        SELECT w.Id as wId, w.[Name] as wName, w.ImageUrl as wImageUrl, w.NeighborhoodId as wNeighborhoodId, n.[Name] as nName, wk.Id as wkId, wk.Date, wk.Duration, d.Name as dName, o.Name as oName
                           FROM Walker w
                                LEFT JOIN Neighborhood n ON n.Id = NeighborhoodId
+                               LEFT JOIN Walks wk ON wk.WalkerId = w.Id
+                               LEFT JOIN Dog d ON d.Id = wk.DogId
+                               LEFT JOIN Owner o ON o.Id = d.OwnerId
                          WHERE w.Id = @id
                     ";
 
@@ -121,28 +124,45 @@ namespace DogGo.Repositories
 
                     using (SqlDataReader reader = cmd.ExecuteReader())
                     {
-                        if (reader.Read())
+                        Walker walker = null;
+                        while (reader.Read())
                         {
-                            Walker walker = new Walker
+                            if (walker == null)
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("wId")),
-                                Name = reader.GetString(reader.GetOrdinal("wName")),
-                                ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
-                                NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
-                                Neighborhood = new Neighborhood()
+                                walker = new Walker
                                 {
-                                    Id = reader.IsDBNull(reader.GetOrdinal("nId")) ? 0 : reader.GetInt32(reader.GetOrdinal("nId")),
-                                    Name = reader.IsDBNull(reader.GetOrdinal("nName")) ? null : reader.GetString(reader.GetOrdinal("nName"))
-                                }
+                                    Id = reader.GetInt32(reader.GetOrdinal("wId")),
+                                    Name = reader.GetString(reader.GetOrdinal("wName")),
+                                    ImageUrl = reader.IsDBNull(reader.GetOrdinal("wImageUrl")) ? null : reader.GetString(reader.GetOrdinal("wImageUrl")),
+                                    NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("wNeighborhoodId")),
+                                    Neighborhood = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? null : new Neighborhood()
+                                    {
+                                        Name = reader.IsDBNull(reader.GetOrdinal("nName")) ? null : reader.GetString(reader.GetOrdinal("nName"))
+                                    },
+                                    Walks = new List<Walks>()
+                                };
+                            }
+                            
+                            if (!reader.IsDBNull(reader.GetOrdinal("wkId")))
+                            {
+                                walker.Walks.Add(new Walks()
+                                {
+                                    Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                                    Duration = reader.GetInt32(reader.GetOrdinal("Duration")),
+                                    Dog = reader.IsDBNull(reader.GetOrdinal("dName")) ? null : new Dog()
+                                    {
+                                        Name = reader.GetString(reader.GetOrdinal("dName")),
+                                        Owner = new Owner()
+                                        {
+                                            Name = reader.GetString(reader.GetOrdinal("oName")),
+                                        }
+                                    },
 
-                            };
+                                });
+                            }
 
+                        }
                             return walker;
-                        }
-                        else
-                        {
-                            return null;
-                        }
                     }
                 }
             }

@@ -2,7 +2,7 @@
 
 namespace DogGo.Models
 {
-    public class Walk
+    public class Walks
     {
         public int Id { get; set; }
         public DateTime Date { get; set; }
