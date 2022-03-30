@@ -47,8 +47,7 @@
                             <tr>
                                 <td>@walk.Date.ToShortDateString()</td>
                                 <td>@walk.Dog.Owner.Name - @walk.Dog.Name</td>
-                                @{TimeSpan ts = TimeSpan.FromSeconds(walk.Duration);}
-                                <td>@string.Format("{0} min", Math.Floor(ts.TotalMinutes)) </td>
+                                <td>@walk.DurationFormated </td>
                             </tr>
                         }
                 </tbody>
@@ -57,7 +56,7 @@
 
         <section class="col-lg-4 col-md-8 container mt-5">
             @{TimeSpan ts2 = TimeSpan.FromSeconds(@Model.Walks.Sum(walk => walk.Duration));}
-            <h5>Total Walk Time: @string.Format("{0:D2} hr {1:D2} min", ts2.Hours, ts2.Minutes)</h5>
+            <h5>Total Walk Time: @Model.TotalWalkTime</h5>
         </section>
     </div>
 </div>
