@@ -176,29 +176,28 @@ namespace DogGo.Repositories
         //    }
         //}
 
-        //public void AddWalk(Walks walk)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"INSERT INTO Dog ([Name], Breed, Notes, ImageUrl, OwnerId)
-        //                                OUTPUT INSERTED.ID
-        //                                VALUES (@name, @breed, @notes, @imageurl, @ownerId)";
+        public void AddWalk(Walks walk)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"INSERT INTO Walks (Date, Duration, WalkerId, DogId)
+                                        OUTPUT INSERTED.ID
+                                        VALUES (@date, @duration, @walkerId, @dogId)";
 
-        //            cmd.Parameters.AddWithValue("@name", dog.Name);
-        //            cmd.Parameters.AddWithValue("@breed", dog.Breed);
-        //            cmd.Parameters.AddWithValue("@notes", dog.Notes == null ? DBNull.Value : dog.Notes);
-        //            cmd.Parameters.AddWithValue("@imageurl", dog.ImageUrl == null ? DBNull.Value : dog.ImageUrl);
-        //            cmd.Parameters.AddWithValue("@ownerId", dog.OwnerId);
+                    cmd.Parameters.AddWithValue("@date", walk.Date);
+                    cmd.Parameters.AddWithValue("@duration", walk.Duration);
+                    cmd.Parameters.AddWithValue("@walkerId", walk.WalkerId);
+                    cmd.Parameters.AddWithValue("@dogId", walk.DogId);
 
-        //            int id = (int)cmd.ExecuteScalar();
-        //            dog.Id = id;
+                    int id = (int)cmd.ExecuteScalar();
+                    walk.Id = id;
 
-        //        }
-        //    }
-        //}
+                }
+            }
+        }
 
         //public void UpdateWalk(Walks walk)
         //{
