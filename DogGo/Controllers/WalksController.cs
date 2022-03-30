@@ -5,6 +5,8 @@ using DogGo.Models;
 using DogGo.Models.ViewModels;
 using System.Collections.Generic;
 using System;
+using System.IO;
+using System.Linq;
 
 namespace DogGo.Controllers
 {
@@ -53,27 +55,16 @@ namespace DogGo.Controllers
         // POST: WalksController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(IFormCollection collection)
+        public ActionResult Create(WalksFormViewModel vm)
         {
             try
             {
-                List<Walks> walks = new List<Walks>();
-                foreach (var dogId in collection["Walk.DogId"])
+                foreach (var dogId in vm.SelectedDogIds)
                 {
-                    Walks walk = new Walks();
-                    walk.Date = DateTime.Parse(collection["Walk.Date"]);
-                    walk.Duration = int.Parse(collection["Walk.Duration"]);
-                    walk.WalkerId = int.Parse(collection["Walk.WalkerId"]);
-                    walk.DogId = int.Parse(dogId);
-
-                    walks.Add(walk);
+                    vm.Walk.DogId = dogId;
+                    _walksRepo.AddWalk(vm.Walk);
                 }
                 
-                foreach(var walk in walks)
-                {
-                    _walksRepo.AddWalk(walk);
-                }
-
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
@@ -121,6 +112,24 @@ namespace DogGo.Controllers
             catch
             {
                 return View();
+            }
+        }
+
+        // POST: WalksController/Delete/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DeleteMultiple(Dictionary<string, int> ids)
+        {
+            try
+            {
+                var selectedIds = ids.Values.ToList();
+                selectedIds.RemoveAt(selectedIds.Count - 1);
+                _walksRepo.DeleteWalksMultiple(selectedIds);
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction(nameof(Index));
             }
         }
     }

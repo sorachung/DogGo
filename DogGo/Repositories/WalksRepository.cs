@@ -245,16 +245,17 @@ namespace DogGo.Repositories
             }
         }
 
-        public void DeleteWalksMultiple(int[] ids)
+        public void DeleteWalksMultiple(List<int> ids)
         {
             using (SqlConnection conn = Connection)
             {
                 conn.Open();
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
-                    cmd.CommandText = @"DELETE FROM Walks
-                                      WHERE Id IN (@ids)";
-                    cmd.Parameters.AddWithValue("@ids", String.Join(", ", ids));
+                    cmd.CommandText = $@"DELETE FROM Walks
+                                      WHERE Id IN ({String.Join(", ", ids)})";
+                    string str = "'" + String.Join("', '", ids) + "'";
+                    cmd.Parameters.AddWithValue("@idsStr", String.Join(", ", ids));
                     cmd.ExecuteNonQuery();
                 }
             }
