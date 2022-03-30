@@ -7,34 +7,59 @@
 <h1>Details</h1>
 
 <div>
-    <h4>Walker</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Id)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Id)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Neighborhood)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Neighborhood.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ImageUrl)
-        </dt>
-        <dd class = "col-sm-10">
-            <img class="bg-info" src="@Model.ImageUrl" alt="avatar" />
-        </dd>
-    </dl>
+    <h1 class="mb-4">Walker Profile</h1>
+
+    <section class="container">
+        @if (String.IsNullOrEmpty(Model.ImageUrl)) {
+          <img style="width:100px;float:left;margin-right:20px"
+             src="https://upload.wikimedia.org/wikipedia/commons/a/a0/Font_Awesome_5_regular_user-circle.svg" />
+          } else {
+          <img  style="width:100px;float:left;margin-right:20px" src="@Model.ImageUrl" />
+          }
+        <div>
+            <label class="font-weight-bold">Name:</label>
+            <span>@Model.Name<s</span>
+        </div>
+        <div>
+            <label class="font-weight-bold">Neighborhood:</label>
+            <span>@Model.Neighborhood.Name</span>
+        </div>
+    </section>
+
+    <hr class="mt-5" />
+    <div class="clearfix"></div>
+
+    <div class="row">
+        <section class="col-lg-4 col-md-8 container mt-5">
+            <h1>Recent Walks</h1>
+
+            <table class="table">
+                <thead class="thead-light">
+                    <tr>
+                        <th scope="col">Date</th>
+                        <th scope="col">Client</th>
+                        <th scope="col">Duration</th>
+                    </tr>
+                </thead>
+                <tbody>
+                        @foreach(Walks walk in Model.Walks)
+                        {
+                            <tr>
+                                <td>@walk.Date.ToShortDateString()</td>
+                                <td>@walk.Dog.Owner.Name - @walk.Dog.Name</td>
+                                @{TimeSpan ts = TimeSpan.FromSeconds(walk.Duration);}
+                                <td>@string.Format("{0} min", Math.Floor(ts.TotalMinutes)) </td>
+                            </tr>
+                        }
+                </tbody>
+            </table>
+        </section>
+
+        <section class="col-lg-4 col-md-8 container mt-5">
+            @{TimeSpan ts2 = TimeSpan.FromSeconds(@Model.Walks.Sum(walk => walk.Duration));}
+            <h5>Total Walk Time: @string.Format("{0:D2} hr {1:D2} min", ts2.Hours, ts2.Minutes)</h5>
+        </section>
+    </div>
 </div>
 <div>
     @Html.ActionLink("Edit", "Edit", new { id = Model.Id }) |
