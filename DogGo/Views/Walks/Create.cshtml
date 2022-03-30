@@ -35,7 +35,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="Walk.DogId" class="control-label"></label>
-                <select asp-for="Walk.DogId" class="form-control">
+                <select asp-for="Walk.DogId" class="form-control" multiple>
                     <option value="">Select Dog</option>
                     @foreach (Dog dog in Model.Dogs)
                     {

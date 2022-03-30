@@ -53,16 +53,32 @@ namespace DogGo.Controllers
         // POST: WalksController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(Walks walk)
+        public ActionResult Create(IFormCollection collection)
         {
             try
             {
-                _walksRepo.AddWalk(walk);
+                List<Walks> walks = new List<Walks>();
+                foreach (var dogId in collection["Walk.DogId"])
+                {
+                    Walks walk = new Walks();
+                    walk.Date = DateTime.Parse(collection["Walk.Date"]);
+                    walk.Duration = int.Parse(collection["Walk.Duration"]);
+                    walk.WalkerId = int.Parse(collection["Walk.WalkerId"]);
+                    walk.DogId = int.Parse(dogId);
+
+                    walks.Add(walk);
+                }
+                
+                foreach(var walk in walks)
+                {
+                    _walksRepo.AddWalk(walk);
+                }
+
                 return RedirectToAction(nameof(Index));
             }
             catch (Exception ex)
             {
-                return View(walk);
+                return RedirectToAction(nameof(Index));
             }
         }
 

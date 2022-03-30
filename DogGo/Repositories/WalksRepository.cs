@@ -68,6 +68,7 @@ namespace DogGo.Repositories
                                 },
                                 Walker = new Walker()
                                 {
+                                    Id =  reader.GetInt32(reader.GetOrdinal("WalkerId")),
                                     Name = reader.GetString(reader.GetOrdinal("wName")),
                                 }
 

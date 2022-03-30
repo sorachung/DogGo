@@ -135,8 +135,9 @@ namespace DogGo.Repositories
                                     Name = reader.GetString(reader.GetOrdinal("wName")),
                                     ImageUrl = reader.IsDBNull(reader.GetOrdinal("wImageUrl")) ? null : reader.GetString(reader.GetOrdinal("wImageUrl")),
                                     NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("wNeighborhoodId")),
-                                    Neighborhood = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? null : new Neighborhood()
+                                    Neighborhood = new Neighborhood()
                                     {
+                                        Id = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("wNeighborhoodId")),
                                         Name = reader.IsDBNull(reader.GetOrdinal("nName")) ? null : reader.GetString(reader.GetOrdinal("nName"))
                                     },
                                     Walks = new List<Walks>()
