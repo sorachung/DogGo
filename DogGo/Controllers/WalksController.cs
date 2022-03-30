@@ -97,21 +97,23 @@ namespace DogGo.Controllers
         // GET: WalksController/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Walks walk = _walksRepo.GetWalkById(id);
+            return View(walk);
         }
 
         // POST: WalksController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult Delete(int id, Walks walk)
         {
             try
             {
+                _walksRepo.DeleteWalk(id);
                 return RedirectToAction(nameof(Index));
             }
             catch
             {
-                return View();
+                return View(walk);
             }
         }
 

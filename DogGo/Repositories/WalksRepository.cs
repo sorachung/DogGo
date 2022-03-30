@@ -81,47 +81,67 @@ namespace DogGo.Repositories
                 }
             }
         }
-        //public Walks GetWalkById()
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"SELECT Id, 
-        //                                       [Name],
-        //                                       Breed,
-        //                                       Notes,
-        //                                       ImageUrl,
-        //                                       ownerId
-        //                                  FROM Dog
-        //                                 WHERE Id = @id";
-        //            cmd.Parameters.AddWithValue("@id", id);
+        public Walks GetWalkById(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"SELECT wk.Id AS wkId, 
+                                               Date,
+                                               Duration,
+                                               WalkerId,
+                                               DogId,
+                                               w.[Name] as wName,
+                                               d.[Name] as dName,
+                                               o.[Name] as oName,
+                                               OwnerId
+                                          FROM Walks wk
+                                               JOIN Walker w ON w.Id = WalkerId
+                                               JOIN Dog d ON d.Id = DogId
+                                               JOIN Owner o ON o.Id = OwnerId";
+                    cmd.Parameters.AddWithValue("@id", id);
 
-        //            using (SqlDataReader reader = cmd.ExecuteReader())
-        //            {
-        //                if (reader.Read())
-        //                {
-        //                    Dog dog = new Dog()
-        //                    {
-        //                        Id = reader.GetInt32(reader.GetOrdinal("Id")),
-        //                        Name = reader.GetString(reader.GetOrdinal("Name")),
-        //                        Breed = reader.GetString(reader.GetOrdinal("Breed")),
-        //                        OwnerId = reader.GetInt32(reader.GetOrdinal("OwnerId")),
-        //                        Notes = reader.IsDBNull(reader.GetOrdinal("Notes")) ? null : reader.GetString(reader.GetOrdinal("Notes")),
-        //                        ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl"))
-        //                    };
+                    using (SqlDataReader reader = cmd.ExecuteReader())
+                    {
+                        if (reader.Read())
+                        {
+                            Walks walk = new Walks()
+                            {
+                                Id = reader.GetInt32(reader.GetOrdinal("wkId")),
+                                Date = reader.GetDateTime(reader.GetOrdinal("Date")),
+                                Duration = reader.GetInt32(reader.GetOrdinal("Duration")),
+                                WalkerId = reader.GetInt32(reader.GetOrdinal("WalkerId")),
+                                DogId = reader.GetInt32(reader.GetOrdinal("DogId")),
+                                Dog = new Dog()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("DogId")),
+                                    Name = reader.GetString(reader.GetOrdinal("dName")),
+                                    Owner = new Owner()
+                                    {
+                                        Id = reader.GetInt32(reader.GetOrdinal("OwnerId")),
+                                        Name = reader.GetString(reader.GetOrdinal("oName"))
+                                    }
+                                },
+                                Walker = new Walker()
+                                {
+                                    Id = reader.GetInt32(reader.GetOrdinal("WalkerId")),
+                                    Name = reader.GetString(reader.GetOrdinal("wName")),
+                                }
 
-        //                    return dog;
-        //                }
-        //                else
-        //                {
-        //                    return null;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+                            };
+
+                            return walk;
+                        }
+                        else
+                        {
+                            return null;
+                        }
+                    }
+                }
+            }
+        }
 
         //public List<Walks> GetWalksByWalkerId(int walkerId)
         //{
