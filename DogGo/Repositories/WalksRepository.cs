@@ -230,19 +230,34 @@ namespace DogGo.Repositories
         //    }
         //}
 
-        //public void DeleteWalk(int id)
-        //{
-        //    using (SqlConnection conn = Connection)
-        //    {
-        //        conn.Open();
-        //        using (SqlCommand cmd = conn.CreateCommand())
-        //        {
-        //            cmd.CommandText = @"DELETE FROM Dog
-        //                              WHERE Id = @id";
-        //            cmd.Parameters.AddWithValue("@id", id);
-        //            cmd.ExecuteNonQuery();
-        //        }
-        //    }
-        //}
+        public void DeleteWalk(int id)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Walks
+                                      WHERE Id = @id";
+                    cmd.Parameters.AddWithValue("@id", id);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
+
+        public void DeleteWalksMultiple(int[] ids)
+        {
+            using (SqlConnection conn = Connection)
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    cmd.CommandText = @"DELETE FROM Walks
+                                      WHERE Id IN (@ids)";
+                    cmd.Parameters.AddWithValue("@ids", String.Join(", ", ids));
+                    cmd.ExecuteNonQuery();
+                }
+            }
+        }
     }
 }
