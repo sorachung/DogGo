@@ -69,7 +69,7 @@ namespace DogGo.Controllers
             }
             catch (Exception ex)
             {
-                return RedirectToAction(nameof(Index));
+                return View(vm);
             }
         }
 
