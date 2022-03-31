@@ -1,0 +1,90 @@
+WalkersController.cs
+
+public ActionResult Details(int id)
+{
+    ...
+}
+
+					GET	/Walkers/Details/{id}
+
+DogsController.cs
+
+public ActionResult Edit(int id)
+{
+    ...
+}
+
+					GET	/Dogs/Edit/{id}
+
+TacosController.cs
+
+public ActionResult Details(int id)
+{
+    ...
+}
+
+					Get	/Tacos/Details/{id}
+
+DogsController.cs
+
+[HttpPost]
+public ActionResult Create(Dog dog)
+{
+    ...
+}
+
+					POST	/Dogs/Create
+
+DogsController.cs
+
+[HttpPost]
+public ActionResult Edit(int id, Dog dog)
+{
+    ...
+}
+
+
+					POST 	/Dogs/Edit/{id}
+
+
+
+Given the following HTTP requests, what would the controller method look like that would handle them?
+
+path: /owners/index
+method: GET
+
+					OwnersController.cs
+					public ActionResult Index() {}
+	
+
+path: /owners/details/96
+method: GET
+
+					OwnersController.cs
+					public ActionResult Details(int id) {}
+
+path: /dogs/create
+method: GET
+
+					DogsController.cs
+					public ActionResult Create() {}
+
+path: /dogs/create
+method: POST
+body: 
+    Name: Delta
+    Breed: Golden Retriever
+    Notes: She will chase squirrels
+
+					DogsController.cs
+					public ActionResult Create(Dog dog) {}
+
+path: walkers/delete/6
+method: POST
+body:
+    Id: 6
+    Name: Mellesa
+    NeighborhoodId: 5
+
+					WalkersController.cs
+					public ActionResult Delete(int id, Walker walker) {}
