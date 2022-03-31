@@ -1,4 +1,4 @@
-﻿@model DogGo.Models.Walker
+﻿@model DogGo.Models.ViewModels.WalkerFormViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -13,19 +13,25 @@
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Walker.Name" class="control-label"></label>
+                <input asp-for="Walker.Name" class="form-control" />
+                <span asp-validation-for="Walker.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="NeighborhoodId" class="control-label"></label>
-                <input asp-for="NeighborhoodId" class="form-control" />
-                <span asp-validation-for="NeighborhoodId" class="text-danger"></span>
+                <label asp-for="Walker.NeighborhoodId" class="control-label"></label>
+                <select asp-for="Walker.NeighborhoodId" class="form-control">
+                    <option value="">Select Neighborhood</option>
+                    @foreach (Neighborhood neighborhood in Model.Neighborhoods)
+                    {
+                        <option value="@neighborhood.Id">@neighborhood.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="Walker.NeighborhoodId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label asp-for="Walker.ImageUrl" class="control-label"></label>
+                <input asp-for="Walker.ImageUrl" class="form-control" />
+                <span asp-validation-for="Walker.ImageUrl" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

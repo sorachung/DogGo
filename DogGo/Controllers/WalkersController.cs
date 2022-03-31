@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using DogGo.Repositories;
 using DogGo.Models;
+using DogGo.Models.ViewModels;
 using System.Collections.Generic;
 using System;
 using System.Security.Claims;
@@ -12,12 +13,14 @@ namespace DogGo.Controllers
     {
         private readonly IWalkerRepository _walkerRepo;
         private readonly IOwnerRepository _ownerRepo;
+        private readonly INeighborhoodRepository _neighborhoodRepo;
 
         // ASP.NET will give us an instance of our Walker Repository. This is called "Dependency Injection"
-        public WalkersController(IWalkerRepository walkerRepository, IOwnerRepository ownerRepository)
+        public WalkersController(IWalkerRepository walkerRepository, IOwnerRepository ownerRepository, INeighborhoodRepository neighborhoodRepository)
         {
             _walkerRepo = walkerRepository;
             _ownerRepo = ownerRepository;
+            _neighborhoodRepo = neighborhoodRepository;
         }
         // GET: WalkersController
         // GET: Walkers
@@ -54,7 +57,14 @@ namespace DogGo.Controllers
         // GET: WalkersController/Create
         public ActionResult Create()
         {
-            return View();
+            List<Neighborhood> neighborhoods = _neighborhoodRepo.GetAll();
+
+            WalkerFormViewModel vm = new WalkerFormViewModel()
+            {
+                Walker = new Walker(),
+                Neighborhoods = neighborhoods
+            };
+            return View(vm);
         }
 
         // POST: WalkersController/Create
@@ -76,13 +86,20 @@ namespace DogGo.Controllers
         // GET: WalkersController/Edit/5
         public ActionResult Edit(int id)
         {
-            Walker walker = _walkerRepo.GetWalkerById(id);
-            if (walker == null)
+            List<Neighborhood> neighborhoods = _neighborhoodRepo.GetAll();
+
+            WalkerFormViewModel vm = new WalkerFormViewModel()
+            {
+                Walker = _walkerRepo.GetWalkerById(id),
+                Neighborhoods = neighborhoods
+            };
+            
+            if (vm.Walker == null)
             {
                 return NotFound();
             } 
 
-            return View(walker);
+            return View(vm);
         }
 
         // POST: WalkersController/Edit/5
