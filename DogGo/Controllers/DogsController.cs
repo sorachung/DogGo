@@ -61,6 +61,7 @@ namespace DogGo.Controllers
         }
 
         // GET: DogsController/Edit/5
+        [Authorize]
         public ActionResult Edit(int id)
         {
             var dog = _dogRepo.GetDogById(id);
@@ -89,6 +90,7 @@ namespace DogGo.Controllers
         }
 
         // GET: DogsController/Delete/5
+        [Authorize]
         public ActionResult Delete(int id)
         {
             var dog = _dogRepo.GetDogById(id);
