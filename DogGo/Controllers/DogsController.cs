@@ -64,7 +64,7 @@ namespace DogGo.Controllers
         public ActionResult Edit(int id)
         {
             var dog = _dogRepo.GetDogById(id);
-            if (dog == null)
+            if (dog == null || dog.OwnerId != GetCurrentUserId())
             {
                 return NotFound();
             }
@@ -92,6 +92,10 @@ namespace DogGo.Controllers
         public ActionResult Delete(int id)
         {
             var dog = _dogRepo.GetDogById(id);
+            if (dog == null || dog.OwnerId != GetCurrentUserId())
+            {
+                return NotFound();
+            }
 
             return View(dog);
         }
