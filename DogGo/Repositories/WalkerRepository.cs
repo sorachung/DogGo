@@ -32,7 +32,7 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT w.Id as wId, w.[Name] as wName, ImageUrl, NeighborhoodId, n.Id as nId, n.[Name] as nName
+                        SELECT w.Id as wId, w.[Name] as wName, Email, ImageUrl, NeighborhoodId, n.Id as nId, n.[Name] as nName
                           FROM Walker w
                                LEFT JOIN Neighborhood n ON n.Id = NeighborhoodId
                     ";
@@ -46,6 +46,7 @@ namespace DogGo.Repositories
                             {
                                 Id = reader.GetInt32(reader.GetOrdinal("wId")),
                                 Name = reader.GetString(reader.GetOrdinal("wName")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
                                 ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("NeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("NeighborhoodId")),
                                 Neighborhood = new Neighborhood()
@@ -73,9 +74,10 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                SELECT Id, [Name], ImageUrl, NeighborhoodId
-                FROM Walker
-                WHERE NeighborhoodId = @neighborhoodId
+                SELECT w.Id as wId, w.[Name] as wName, Email, ImageUrl, NeighborhoodId, n.Id as nId, n.[Name] as nName
+                          FROM Walker w
+                               LEFT JOIN Neighborhood n ON n.Id = NeighborhoodId
+                          WHERE NeighborhoodId = @neighborhoodId
             ";
 
                     cmd.Parameters.AddWithValue("@neighborhoodId", neighborhoodId);
@@ -88,8 +90,9 @@ namespace DogGo.Repositories
                         {
                             Walker walker = new Walker
                             {
-                                Id = reader.GetInt32(reader.GetOrdinal("Id")),
-                                Name = reader.GetString(reader.GetOrdinal("Name")),
+                                Id = reader.GetInt32(reader.GetOrdinal("wId")),
+                                Email = reader.GetString(reader.GetOrdinal("Email")),
+                                Name = reader.GetString(reader.GetOrdinal("wName")),
                                 ImageUrl = reader.IsDBNull(reader.GetOrdinal("ImageUrl")) ? null : reader.GetString(reader.GetOrdinal("ImageUrl")),
                                 NeighborhoodId = reader.GetInt32(reader.GetOrdinal("NeighborhoodId"))
                             };
@@ -111,7 +114,7 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                        SELECT w.Id as wId, w.[Name] as wName, w.ImageUrl as wImageUrl, w.NeighborhoodId as wNeighborhoodId, n.[Name] as nName, wk.Id as wkId, wk.Date, wk.Duration, d.Name as dName, o.Name as oName
+                        SELECT w.Id as wId, w.[Name] as wName, w.Email as wEmail, w.ImageUrl as wImageUrl, w.NeighborhoodId as wNeighborhoodId, n.[Name] as nName, wk.Id as wkId, wk.Date, wk.Duration, d.Name as dName, o.Name as oName
                           FROM Walker w
                                LEFT JOIN Neighborhood n ON n.Id = NeighborhoodId
                                LEFT JOIN Walks wk ON wk.WalkerId = w.Id
@@ -133,6 +136,7 @@ namespace DogGo.Repositories
                                 {
                                     Id = reader.GetInt32(reader.GetOrdinal("wId")),
                                     Name = reader.GetString(reader.GetOrdinal("wName")),
+                                    Email = reader.GetString(reader.GetOrdinal("wEmail")),
                                     ImageUrl = reader.IsDBNull(reader.GetOrdinal("wImageUrl")) ? null : reader.GetString(reader.GetOrdinal("wImageUrl")),
                                     NeighborhoodId = reader.IsDBNull(reader.GetOrdinal("wNeighborhoodId")) ? 0 : reader.GetInt32(reader.GetOrdinal("wNeighborhoodId")),
                                     Neighborhood = new Neighborhood()
@@ -177,12 +181,13 @@ namespace DogGo.Repositories
                 using (SqlCommand cmd = conn.CreateCommand())
                 {
                     cmd.CommandText = @"
-                    INSERT INTO Walker ([Name], ImageUrl, NeighborhoodId)
+                    INSERT INTO Walker ([Name], Email, ImageUrl, NeighborhoodId)
                     OUTPUT INSERTED.ID
-                    VALUES (@name, @imageUrl, @neighborhoodId);
+                    VALUES (@name, @email, @imageUrl, @neighborhoodId);
                 ";
 
                     cmd.Parameters.AddWithValue("@name", walker.Name);
+                    cmd.Parameters.AddWithValue("@email", walker.Email);
                     cmd.Parameters.AddWithValue("@imageUrl", walker.ImageUrl == null ? DBNull.Value : walker.ImageUrl);
                     cmd.Parameters.AddWithValue("@neighborhoodId", walker.NeighborhoodId == 0 ? DBNull.Value : walker.NeighborhoodId);
 
@@ -202,12 +207,14 @@ namespace DogGo.Repositories
                 {
                     cmd.CommandText = @"UPDATE Walker
                                            SET [Name] = @name,
+                                               Email = @email,
                                                ImageUrl = @imageUrl,
                                                NeighborhoodId = @neighborhoodId
                                          WHERE Id = @id";
 
                     cmd.Parameters.AddWithValue("@id", walker.Id);
                     cmd.Parameters.AddWithValue("@name", walker.Name);
+                    cmd.Parameters.AddWithValue("@email", walker.Email);
                     cmd.Parameters.AddWithValue("@imageUrl", walker.ImageUrl == null ? DBNull.Value : walker.ImageUrl);
                     cmd.Parameters.AddWithValue("@neighborhoodId", walker.NeighborhoodId == 0 ? DBNull.Value : walker.NeighborhoodId);
 
