@@ -1,0 +1,48 @@
+﻿@model DogGo.Models.ViewModels.WalksFormViewModel
+
+@{
+    ViewData["Title"] = "Request a Walk with @Model.Walk.Walker.Name";
+}
+
+<h1>RequestWalk</h1>
+
+@*<h4>WalksFormViewModel</h4>*@
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="RequestWalk">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Walk.Date" class="control-label"></label>
+                <input asp-for="Walk.Date" class="form-control" value="@DateTime.Today"/>
+                <span asp-validation-for="Walk.Date" class="text-danger"></span>
+            </div>
+             <div class="form-group">
+                <input asp-for="Walk.WalkerId" class="form-control" type="hidden"/>
+                <span asp-validation-for="Walk.WalkerId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SelectedDogIds" class="control-label"></label>
+                <select asp-for="SelectedDogIds" class="form-control" multiple>
+                    <option value="">Select Dog</option>
+                    @foreach (Dog dog in Model.Dogs)
+                    {
+                        <option value="@dog.Id">@dog.Name</option>
+                    }
+                </select>
+                <span asp-validation-for="SelectedDogIds" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

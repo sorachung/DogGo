@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System;
 using System.IO;
 using System.Linq;
+using System.Security.Claims;
 
 namespace DogGo.Controllers
 {
@@ -51,7 +52,7 @@ namespace DogGo.Controllers
 
             return View(vm);
         }
-
+       
         // POST: WalksController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -72,6 +73,50 @@ namespace DogGo.Controllers
                 return View(vm);
             }
         }
+
+        public ActionResult RequestWalk(int id)
+        {
+            List<Dog> dogs = _dogRepo.GetDogsByOwnerId(GetCurrentUserId());
+            Walker walker = _walkerRepo.GetWalkerById(id);
+
+            WalksFormViewModel vm = new WalksFormViewModel()
+            {
+                Walk = new Walks()
+                {
+                    Walker = walker,
+                    WalkerId = id,
+                    WalkStatusId = 1
+                },
+                Dogs = dogs,
+            };
+
+            return View(vm);
+        }
+
+        // POST: WalksController/RequestWalk
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RequestWalk(WalksFormViewModel vm)
+        {
+            try
+            {
+                vm.Walk.WalkStatusId = 1;
+                vm.Walk.Duration = 0;
+                foreach (var dogId in vm.SelectedDogIds)
+                {
+                    vm.Walk.DogId = dogId;
+                   
+                    _walksRepo.AddWalk(vm.Walk);
+                }
+
+                return RedirectToAction("Index", "Walkers");
+            }
+            catch (Exception ex)
+            {
+                return View(vm);
+            }
+        }
+
 
         // GET: WalksController/Edit/5
         public ActionResult Edit(int id)
@@ -133,6 +178,12 @@ namespace DogGo.Controllers
             {
                 return RedirectToAction(nameof(Index));
             }
+        }
+
+        private int GetCurrentUserId()
+        {
+            string id = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            return int.Parse(id);
         }
     }
 }

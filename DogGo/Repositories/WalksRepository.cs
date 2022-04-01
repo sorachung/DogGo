@@ -213,7 +213,7 @@ namespace DogGo.Repositories
                 {
                     cmd.CommandText = @"INSERT INTO Walks (Date, Duration, WalkerId, DogId, WalkStatusId)
                                         OUTPUT INSERTED.ID
-                                        VALUES (@date, @duration, @walkerId, @dogId, walkStatusId)";
+                                        VALUES (@date, @duration, @walkerId, @dogId, @walkStatusId)";
 
                     cmd.Parameters.AddWithValue("@date", walk.Date);
                     cmd.Parameters.AddWithValue("@duration", walk.Duration);

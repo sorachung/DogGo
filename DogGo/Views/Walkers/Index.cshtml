@@ -6,9 +6,9 @@
 
 <h1>Index</h1>
 
-<p>
+<!--<p>
     <a asp-action="Create">Create New</a>
-</p>
+</p>-->
 <table class="table">
     <thead>
         <tr>
@@ -31,29 +31,41 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Neighborhood.Name)
-            </td>
-            <td>
-                <img src="@item.ImageUrl" alt="avatar" />
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                @Html.ActionLink("Details", "Details", new { id=item.Id }) |
-                @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Id)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Neighborhood.Name)
+                </td>
+                <td>
+                    <img src="@item.ImageUrl" alt="avatar" />
+                </td>
+                @{
+                    if (User.IsInRole("DogOwner"))
+                    {
+                        <td>
+                            @Html.ActionLink("Select", "RequestWalk", "Walks", new { id=item.Id })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                            @Html.ActionLink("Details", "Details", new { id=item.Id }) |
+                            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+                        </td>
+                    }
+                }
+            </tr>
+        }
     </tbody>
 </table>
